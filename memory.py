@@ -9,14 +9,22 @@ Exercises:
 5. Use letters instead of tiles.
 """
 
-from random import *
 from turtle import *
+
+=======
+from random import shuffle
+
 from freegames import path
 
 car = path('car.gif')
 tiles = list ('ABCDEFGH' *4) #Usamos letras envez de numeros
 state = {'mark': None}
+
 hide = [True] * 16 #Hice  la cuadricula mas corta 
+
+=======
+hide = [True] * 64
+tap_count = 0
 
 
 def square(x, y):
@@ -31,29 +39,30 @@ def square(x, y):
         left(90)
     end_fill()
 
-
 def index(x, y):
     """Convert (x, y) coordinates to tiles index."""
     return int((x + 200) // 50 + ((y + 200) // 50) * 4)
-
 
 def xy(count):
     """Convert tiles count to (x, y) coordinates."""
     return (count % 8) * 50 - 200, (count // 8) * 50 - 200
 
-
 def tap(x, y):
     """Update mark and hidden tiles based on tap."""
+    global tap_count
     spot = index(x, y)
     mark = state['mark']
-
     if mark is None or mark == spot or tiles[mark] != tiles[spot]:
         state['mark'] = spot
     else:
         hide[spot] = False
         hide[mark] = False
         state['mark'] = None
-
+        tap_count += 1  # Increment the tap count
+        draw_taps()  # Draw the tap count on the screen
+        if all(not h for h in hide):  # Check if all tiles are revealed
+            onscreenclick(None)  # Disable further taps
+            draw_winning_message()  # Show winning message
 
 def draw():
     """Draw image and tiles."""
@@ -69,7 +78,11 @@ def draw():
 
     mark = state['mark']
 
+
   if mark is not None and hide[mark]:
+=======
+    if mark is not None and hide[mark]:
+
         x, y = xy(mark)
         up()
         goto(x + 25, y - 20)  # Centar las letras en el cuadrado
@@ -79,8 +92,18 @@ def draw():
 
 
     update()
-    ontimer(draw, 100)
 
+def draw_taps():
+    """Draw the number of taps on the screen."""
+    goto(200, -220)
+    color('black')
+    write(f'Taps: {tap_count}', font=('Arial', 16, 'normal'))
+
+def draw_winning_message():
+    """Display winning message."""
+    goto(-100, 0)
+    color('green')
+    write('All tiles revealed!', font=('Arial', 30, 'bold'))
 
 shuffle(tiles)
 setup(420, 420, 370, 0)
@@ -90,3 +113,4 @@ tracer(False)
 onscreenclick(tap)
 draw()
 done()
+
