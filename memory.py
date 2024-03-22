@@ -11,13 +11,12 @@ Exercises:
 
 from random import *
 from turtle import *
-
 from freegames import path
 
 car = path('car.gif')
-tiles = list(range(32)) * 2
+tiles = list ('ABCDEFGH' *4) #Usamos letras envez de numeros
 state = {'mark': None}
-hide = [True] * 64
+hide = [True] * 16 #Hice  la cuadricula mas corta 
 
 
 def square(x, y):
@@ -35,7 +34,7 @@ def square(x, y):
 
 def index(x, y):
     """Convert (x, y) coordinates to tiles index."""
-    return int((x + 200) // 50 + ((y + 200) // 50) * 8)
+    return int((x + 200) // 50 + ((y + 200) // 50) * 4)
 
 
 def xy(count):
@@ -70,12 +69,14 @@ def draw():
 
     mark = state['mark']
 
-    if mark is not None and hide[mark]:
+  if mark is not None and hide[mark]:
         x, y = xy(mark)
         up()
-        goto(x + 2, y)
+        goto(x + 25, y - 20)  # Centar las letras en el cuadrado
         color('black')
-        write(tiles[mark], font=('Arial', 30, 'normal'))
+        write(tiles[mark], align='center', font=('Arial', 30, 'normal'))
+
+
 
     update()
     ontimer(draw, 100)
